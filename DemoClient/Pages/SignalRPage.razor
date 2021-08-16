@@ -1,0 +1,13 @@
+﻿@page "/"
+
+<h1>Messages</h1>
+<button @onclick="JoinGroup">Join demogroup</button>
+<button @onclick="LeaveGroup">Leave demogroup</button>
+<button @onclick="LeaveAllGroups">Leave all groups</button>
+<label>Http response: @httpResponse</label>
+<div>
+    @foreach (var message in messages)
+    {
+        <p>@message</p>
+    }
+</div>
