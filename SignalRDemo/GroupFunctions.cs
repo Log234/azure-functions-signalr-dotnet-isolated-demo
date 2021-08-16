@@ -66,26 +66,24 @@ namespace SignalRDemo
         /// <returns></returns>
         [Function("removefromgroup")]
         public static MultipleOutput RemoveFromGroup(
-            [SignalRTrigger(hubName: "demohub", category: "messages", @event: "RemoveFromGroup",
-            new string[] { "groupName", "connectionId" })]
-            dynamic data)
+            [SignalRTrigger(hubName: "demohub", category: "messages", @event: "RemoveFromGroup")]
+            SignalRInput data)
         {
-            var result = new RouteValueDictionary(data);
+            string groupName = JsonSerializer.Deserialize<string>(data.Arguments[0].GetRawText());
+            string connectionId = JsonSerializer.Deserialize<string>(data.Arguments[1].GetRawText());
 
-            throw new ArgumentException($"Data contains: {JsonSerializer.Serialize(result)}");
-
-            var removeFromGroup = new 
+            var removeFromGroup = new SignalRGroupAction
             {
-                connectionId = data.connectionId,
-                groupName = data.groupName,
-                action = "remove" //GroupAction.Remove
+                ConnectionId = connectionId,
+                GroupName = groupName,
+                Action = GroupAction.Remove
             };
 
             var notificationMessage = new SignalRMessage
             {
                 Target = "ReceiveMessage",
-                GroupName = data.groupName,
-                Arguments = new object[] { $"The user with connection ID {data.connectionId} has left the group." }
+                GroupName = groupName,
+                Arguments = new object[] { $"The user with connection ID {connectionId} has left the group." }
             };
 
             var output = new MultipleOutput();
@@ -102,13 +100,12 @@ namespace SignalRDemo
         /// <returns></returns>
         [Function("removefromallgroups")]
         public static MultipleOutput RemoveFromAllGroups(
-            [SignalRTrigger(hubName: "demohub", category: "messages", @event: "RemoveFromAllGroups",
-            new string[] {"connectionId" })]
-            MessageData data)
+            [SignalRTrigger(hubName: "demohub", category: "messages", @event: "RemoveFromAllGroups")]
+            SignalRInput data)
         {
             var removeFromAllGroups = new SignalRGroupAction
             {
-                ConnectionId = data.connectionId,
+                ConnectionId = data.ConnectionId,
 
                 // Even though we remove the user from all groups we must still specify a group name.
                 // This is due to the group name being a required JSON property, even though it will not be used.
@@ -116,17 +113,19 @@ namespace SignalRDemo
                 Action = GroupAction.RemoveAll
             };
 
+            var notificationMessage = new SignalRMessage
+            {
+                Target = "ReceiveMessage",
+                GroupName = "demogroup",
+                Arguments = new object[] { $"The user with connection ID {data.ConnectionId} has left the group." }
+            };
+
             var output =  new MultipleOutput();
             output.GroupActions.Add(removeFromAllGroups);
+            output.Messages.Add(notificationMessage);
 
             return output;
         }
-    }
-
-    internal class MessageData
-    {
-        public string groupName { get; init; }
-        public string connectionId { get; init; }
     }
 
     internal class MultipleOutput
