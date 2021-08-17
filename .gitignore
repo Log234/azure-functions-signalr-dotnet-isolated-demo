@@ -262,3 +262,6 @@ paket-files/
 # Python Tools for Visual Studio (PTVS)
 __pycache__/
 *.pyc
+/SignalRDemo/Properties/PublishProfiles
+/SignalRDemo/Properties/serviceDependencies.func-signalrdemo-test - Zip Deploy.json
+/SignalRDemo/Properties/ServiceDependencies/func-signalrdemo-test - Zip Deploy
