@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Text.Json;
 
 namespace SignalRDemo.DataTypes
 {
@@ -11,7 +8,7 @@ namespace SignalRDemo.DataTypes
         /// <summary>
         /// The arguments of invocation message.
         /// </summary>
-        public object[] Arguments { get; set; }
+        public JsonElement[] Arguments { get; set; }
 
         /// <summary>
         /// The error message of close connection event.
@@ -58,7 +55,7 @@ namespace SignalRDemo.DataTypes
 
         /// <summary>
         /// The claims of the client.
-        /// If you multiple claims have the same key, only the first one will be reserved.
+        /// If multiple claims have the same key, only the first one will be reserved.
         /// </summary>
         public IDictionary<string, string> Claims { get; set; }
     }

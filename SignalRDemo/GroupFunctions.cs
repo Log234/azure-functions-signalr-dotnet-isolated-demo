@@ -67,10 +67,10 @@ namespace SignalRDemo
         [Function("removefromgroup")]
         public static MultipleOutput RemoveFromGroup(
             [SignalRTrigger(hubName: "demohub", category: "messages", @event: "RemoveFromGroup")]
-            SignalRInput data)
+            InvocationContext data)
         {
-            string groupName = JsonSerializer.Deserialize<string>(data.Arguments[0].GetRawText());
-            string connectionId = JsonSerializer.Deserialize<string>(data.Arguments[1].GetRawText());
+            string groupName = data.Arguments[0].Parse<string>();
+            string connectionId = data.Arguments[1].Parse<string>();
 
             var removeFromGroup = new SignalRGroupAction
             {
@@ -101,7 +101,7 @@ namespace SignalRDemo
         [Function("removefromallgroups")]
         public static MultipleOutput RemoveFromAllGroups(
             [SignalRTrigger(hubName: "demohub", category: "messages", @event: "RemoveFromAllGroups")]
-            SignalRInput data)
+            InvocationContext data)
         {
             var removeFromAllGroups = new SignalRGroupAction
             {
@@ -131,7 +131,7 @@ namespace SignalRDemo
     internal class MultipleOutput
     {
         [SignalROutput(HubName = "demohub")]
-        public List<object> GroupActions { get; set; } = new List<object>();
+        public List<SignalRGroupAction> GroupActions { get; set; } = new List<SignalRGroupAction>();
 
         [SignalROutput(HubName = "demohub")]
         public List<SignalRMessage> Messages { get; set; } = new List<SignalRMessage>();
